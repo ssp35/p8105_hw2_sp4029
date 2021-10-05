@@ -13,10 +13,28 @@ library(readxl)
 ### Problem 1
 
 ```{r}
-trash_df <- read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", range = "A2:N408") %>% 
+trash_df <- 
+  read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", range = "A2:N408") %>% 
   janitor::clean_names() %>% 
   na.omit() %>% 
   mutate(sports_balls = round(sports_balls))
+```
+
+```{r}
+precip_18 <- 
+  read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", sheet = 5, range = "A2:B14") %>% 
+  janitor::clean_names() %>% 
+  mutate(year = 2018)
+
+precip_19 <- 
+  read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", sheet = 4, range = "A2:B14") %>% 
+  janitor::clean_names() %>% 
+  mutate(year = 2019) %>% 
+  na.omit()
+
+precip_df <- 
+  bind_rows(precip_18, precip_19) %>% 
+  mutate(month = month.name[month])
 ```
 
 ### Problem 2
