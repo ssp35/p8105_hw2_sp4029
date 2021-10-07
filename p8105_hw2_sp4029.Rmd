@@ -16,7 +16,7 @@ library(readxl)
 trash_df <- 
   read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", range = "A2:N408") %>% 
   janitor::clean_names() %>% 
-  na.omit() %>% 
+  drop_na() %>% 
   mutate(sports_balls = round(sports_balls))
 ```
 
@@ -30,13 +30,23 @@ precip_19 <-
   read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", sheet = 4, range = "A2:B14") %>% 
   janitor::clean_names() %>% 
   mutate(year = 2019) %>% 
-  na.omit()
+  drop_na()
 
 precip_df <- 
   bind_rows(precip_18, precip_19) %>% 
   mutate(month = month.name[month])
 ```
 
+#### Mr. Trash Wheel Dataset
+
+There are `r nrow(trash_df)` observations and `r ncol(trash_df)` variables in the Mr. Trash Wheel dataset. Some key variables in this dataset include the weight of the trash in each dumpster in tons and the volume of the trash in cubic yards. The median number of sports balls in a dumpster in 2019 was `r trash_df %>% filter(year == 2019) %>% summarize(median(sports_balls))`.
+
+#### Precipitation Dataset
+
+There are `r nrow(precip_df)` observations and `r ncol(precip_df)` variables in the resulting precipitation dataset. The key variable in this dataset is the total amount of precipitation each month. The total precipitation in 2018 was `r precip_df %>% filter(year == 2018) %>% summarize(sum(total))` inches, while the total precipitation in 2019 from January through June was `r precip_df %>% filter(year == 2019) %>% summarize(sum(total))` inches.
+
+
 ### Problem 2
+
 
 ### Problem 3
