@@ -82,7 +82,23 @@ unemp_df <-
     Jan:Dec,
     names_to = "month",
     values_to = "unemp_rate"
-  )
+  ) %>% 
+  janitor::clean_names()
+
+unemp_df$year <- as.character(unemp_df$year)
 ```
+
+Merge
+
+```{r}
+final_df <- 
+  pols_df %>% 
+  left_join(snp_df, by = c("year", "month")) %>% 
+  left_join(unemp_df, by = c("year", "month"))
+```
+
+
+Write a short paragraph about these datasets. Explain briefly what each dataset contained, and describe the resulting dataset (e.g. give the dimension, range of years, and names of key variables).
+
 
 ### Problem 3
