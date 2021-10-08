@@ -14,7 +14,7 @@ library(readxl)
 
 ```{r}
 trash_df <- 
-  read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", range = "A2:N408") %>% 
+  read_excel("data/Trash-Wheel-Collection-Totals-7-2020-2.xlsx", range = "A2:N408") %>% 
   janitor::clean_names() %>% 
   drop_na() %>% 
   mutate(sports_balls = round(sports_balls))
@@ -22,15 +22,14 @@ trash_df <-
 
 ```{r}
 precip_18 <- 
-  read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", sheet = 5, range = "A2:B14") %>% 
+  read_excel("data/Trash-Wheel-Collection-Totals-7-2020-2.xlsx", sheet = 7, range = "A2:B14") %>% 
   janitor::clean_names() %>% 
   mutate(year = 2018)
 
 precip_19 <- 
-  read_excel("data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", sheet = 4, range = "A2:B14") %>% 
+  read_excel("data/Trash-Wheel-Collection-Totals-7-2020-2.xlsx", sheet = 6, range = "A2:B14") %>% 
   janitor::clean_names() %>% 
-  mutate(year = 2019) %>% 
-  drop_na()
+  mutate(year = 2019)
 
 precip_df <- 
   bind_rows(precip_18, precip_19) %>% 
@@ -48,5 +47,42 @@ There are `r nrow(precip_df)` observations and `r ncol(precip_df)` variables in 
 
 ### Problem 2
 
+Politicians Dataset
+
+```{r}
+pols_df <- 
+  read_csv("data/fivethirtyeight_datasets/pols-month.csv") %>% 
+  separate(mon, into = c("year", "month", "day")) %>% 
+  mutate(month = month.abb[as.numeric(month)],
+         president = recode(prez_dem, `1` = "dem", `0` = "gop")) %>% 
+  select(-c(day, prez_gop, prez_dem))
+```
+
+S&P Stock Dataset
+
+```{r}
+snp_df <- read_csv("data/fivethirtyeight_datasets/snp.csv")
+
+dates <- snp_df$date %>% as.Date(., "%m/%d/%y")
+dates <- as.Date(ifelse(dates > Sys.Date(), format(dates, "19%y-%m-%d"), format(dates)))
+snp_df$date = dates
+
+snp_df <- snp_df %>% 
+  separate(date, into = c("year", "month", "day")) %>% 
+  mutate(month = month.abb[as.numeric(month)]) %>% 
+  select(-day)
+```
+
+Unemployment Dataset
+
+```{r}
+unemp_df <- 
+  read_csv("data/fivethirtyeight_datasets/unemployment.csv") %>% 
+  pivot_longer(
+    Jan:Dec,
+    names_to = "month",
+    values_to = "unemp_rate"
+  )
+```
 
 ### Problem 3
