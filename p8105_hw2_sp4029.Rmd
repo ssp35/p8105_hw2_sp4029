@@ -104,3 +104,16 @@ Once these three datasets are combined, the resulting data set contains `r nrow(
 
 
 ### Problem 3
+
+```{r message=FALSE}
+baby_names <-
+  read_csv("data/Popular_Baby_Names.csv") %>% 
+  janitor::clean_names()
+
+baby_names$gender <- tolower(baby_names$gender)
+baby_names$ethnicity <- stringr::str_to_title(baby_names$ethnicity)
+baby_names$childs_first_name <- stringr::str_to_title(baby_names$childs_first_name)
+
+baby_names <- distinct(baby_names)
+```
+
