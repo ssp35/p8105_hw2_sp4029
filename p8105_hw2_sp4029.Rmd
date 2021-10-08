@@ -49,7 +49,7 @@ There are `r nrow(precip_df)` observations and `r ncol(precip_df)` variables in 
 
 Politicians Dataset
 
-```{r}
+```{r message=FALSE}
 pols_df <- 
   read_csv("data/fivethirtyeight_datasets/pols-month.csv") %>% 
   separate(mon, into = c("year", "month", "day")) %>% 
@@ -60,7 +60,7 @@ pols_df <-
 
 S&P Stock Dataset
 
-```{r}
+```{r message=FALSE}
 snp_df <- read_csv("data/fivethirtyeight_datasets/snp.csv")
 
 dates <- snp_df$date %>% as.Date(., "%m/%d/%y")
@@ -75,7 +75,7 @@ snp_df <- snp_df %>%
 
 Unemployment Dataset
 
-```{r}
+```{r message=FALSE}
 unemp_df <- 
   read_csv("data/fivethirtyeight_datasets/unemployment.csv") %>% 
   pivot_longer(
@@ -97,8 +97,10 @@ final_df <-
   left_join(unemp_df, by = c("year", "month"))
 ```
 
+The `pols-month.csv` dataset contains information about politicians and the number of which are democratic or republican over time. Once cleaned, it has `r nrow(pols_df)` observations and `r ncol(pols_df)` variables. The `snp.csv` dataset contains information about the stock Standard & Poor's closing value for each day of observation. After cleaning, this data set has `r nrow(snp_df)` observations and `r ncol(snp_df)` variables. The `unemployment.csv` dataset contains information about the unemployment rate for each month throughout each year included in the dataset. This dataset has `r nrow(unemp_df)` observations and `r ncol(unemp_df)` variables. 
 
-Write a short paragraph about these datasets. Explain briefly what each dataset contained, and describe the resulting dataset (e.g. give the dimension, range of years, and names of key variables).
+
+Once these three datasets are combined, the resulting data set contains `r nrow(final_df)` observations and `r ncol(final_df)` variables. The years included in the combined dataset range from `r min(final_df$year)` to `r max(final_df$year)`. Some key variables include `president`, `close`, and `unemp_rate`. Of the observations in the combined dataset, `r final_df %>% filter(president == "dem") %>% nrow()` of the months had a democratic president, and `r final_df %>% filter(president == "gop") %>% nrow()` had a republican president. The mean closing value in 2008 was `r final_df %>% filter(year == 2008) %>% summarize(round(mean(close), 2))` while the mean unemployment rate was `r final_df %>% filter(year == 2008) %>% summarize(round(mean(unemp_rate), 1))` that year.
 
 
 ### Problem 3
